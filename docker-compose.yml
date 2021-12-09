@@ -1,0 +1,9 @@
+version: '3'
+services:
+  go:
+    build: .
+    volumes:
+      - ./:/go/nrsDDD/
+    ports:
+      - "50510:50510"
+    tty: true
