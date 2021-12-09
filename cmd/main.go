@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"nrsDDD/user"
 )
@@ -9,7 +10,7 @@ import (
 func main() {
 	fullName, err := user.New("Kenta", "Yamaguchi")
 	if err != nil {
-		fmt.Errorf("error!")
+		log.Fatal(err)
 	}
 	fmt.Println(fullName.FirstName, fullName.LastName)
 }
