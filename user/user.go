@@ -21,3 +21,21 @@ func New(value string) (*User, error) {
 	}
 	return u, nil
 }
+
+func Update(id int32, name string) (*User, error) {
+	if id <= 0 {
+		return nil, errors.New("id is invalid")
+	}
+	if len(name) == 0 {
+		return nil, errors.New("name is invalid")
+	}
+	un, err := newUserName(name)
+	if err != nil {
+		return nil, err
+	}
+	u := &User{
+		Id:   id,
+		Name: *un,
+	}
+	return u, nil
+}
