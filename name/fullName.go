@@ -1,4 +1,4 @@
-package user
+package name
 
 type fullName struct {
 	FirstName name
