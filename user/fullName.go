@@ -1,17 +1,17 @@
 package user
 
 type fullName struct {
-	FirstName firstName
-	LastName  lastName
+	FirstName name
+	LastName  name
 }
 
 func New(firstName string, lastName string) (*fullName, error) {
-	fn, err := newFirstName(firstName)
+	fn, err := newName(firstName)
 	if err != nil {
 		return nil, err
 	}
 
-	ln, err := newLastName(lastName)
+	ln, err := newName(lastName)
 	if err != nil {
 		return nil, err
 	}
