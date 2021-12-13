@@ -4,37 +4,31 @@ import (
 	"fmt"
 	"log"
 
-	"nrsDDD/money"
-	"nrsDDD/name"
 	"nrsDDD/user"
 )
 
 func main() {
-	fullName, err := name.New("Kenta", "Yamaguchi")
+	user1, err := user.New("1", "KEY")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(fullName.FirstName, fullName.LastName)
+	fmt.Println(*user1)
 
-	mon, err := money.New(200, "yen")
+	err = user1.ChangeName("Kenta")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(*mon)
-	mon2, err := money.New(300, "yen")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(*mon2)
-	mon3, err := mon.Add(*mon2)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(*mon3)
+	fmt.Println(*user1)
 
-	user, err := user.New("KEY")
+	user2, err := user.New("2", "Pori")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(*user)
+	fmt.Println(*user2)
+
+	if user1.Equals(*user2) {
+		fmt.Println("Equal")
+	} else {
+		fmt.Println("Not Equal")
+	}
 }

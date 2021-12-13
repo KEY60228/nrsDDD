@@ -3,39 +3,41 @@ package user
 import "errors"
 
 type User struct {
-	Id   int32
+	Id   userId
 	Name userName
 }
 
-func New(value string) (*User, error) {
-	if len(value) == 0 {
-		return nil, errors.New("UserName is invalid")
-	}
-	un, err := newUserName(value)
-	if err != nil {
-		return nil, err
-	}
-	u := &User{
-		Id:   1,
-		Name: *un,
-	}
-	return u, nil
-}
-
-func Update(id int32, name string) (*User, error) {
-	if id <= 0 {
-		return nil, errors.New("id is invalid")
+func New(id string, name string) (*User, error) {
+	if len(id) == 0 {
+		return nil, errors.New("UserId is invalid")
 	}
 	if len(name) == 0 {
-		return nil, errors.New("name is invalid")
+		return nil, errors.New("UserName is invalid")
+	}
+	ui, err := newUserId(id)
+	if err != nil {
+		return nil, err
 	}
 	un, err := newUserName(name)
 	if err != nil {
 		return nil, err
 	}
 	u := &User{
-		Id:   id,
+		Id:   *ui,
 		Name: *un,
 	}
 	return u, nil
+}
+
+func (u *User) ChangeName(name string) error {
+	un, err := newUserName(name)
+	if err != nil {
+		return err
+	}
+	u.Name = *un
+	return nil
+}
+
+func (u *User) Equals(other User) bool {
+	return u.Id == other.Id
 }
