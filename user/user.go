@@ -37,3 +37,7 @@ func (u *User) ChangeName(name string) error {
 	u.Name = *un
 	return nil
 }
+
+func (u *User) Equals(other User) bool {
+	return u.Id == other.Id
+}
