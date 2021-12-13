@@ -32,7 +32,7 @@ func main() {
 	}
 	fmt.Println(*mon3)
 
-	user, err := user.New("KEY")
+	user, err := user.New("1", "KEY")
 	if err != nil {
 		log.Fatal(err)
 	}

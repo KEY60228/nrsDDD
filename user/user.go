@@ -3,20 +3,27 @@ package user
 import "errors"
 
 type User struct {
-	Id   int32
+	Id   userId
 	Name userName
 }
 
-func New(value string) (*User, error) {
-	if len(value) == 0 {
+func New(id string, name string) (*User, error) {
+	if len(id) == 0 {
+		return nil, errors.New("UserId is invalid")
+	}
+	if len(name) == 0 {
 		return nil, errors.New("UserName is invalid")
 	}
-	un, err := newUserName(value)
+	ui, err := newUserId(id)
+	if err != nil {
+		return nil, err
+	}
+	un, err := newUserName(name)
 	if err != nil {
 		return nil, err
 	}
 	u := &User{
-		Id:   1,
+		Id:   *ui,
 		Name: *un,
 	}
 	return u, nil
