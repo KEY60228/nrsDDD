@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"nrsDDD/user"
+	"nrsDDD/Domain/Models/user"
 )
 
 func main() {
