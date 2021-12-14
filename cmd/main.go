@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"nrsDDD/Domain/Models/user"
+	userService "nrsDDD/Domain/Services/user"
 )
 
 func main() {
@@ -30,5 +31,11 @@ func main() {
 		fmt.Println("Equal")
 	} else {
 		fmt.Println("Not Equal")
+	}
+
+	if userService.Exists(*user2) {
+		fmt.Println("Exists")
+	} else {
+		fmt.Println(("Not Exists"))
 	}
 }
