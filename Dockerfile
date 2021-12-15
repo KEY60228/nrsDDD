@@ -1,6 +1,6 @@
 FROM golang:1.17-alpine3.14
 
-RUN apk add --update --no-cache bash gcc make git curl postgresql-client
+RUN apk add --update --no-cache bash gcc make git curl postgresql-client gzip tar
 RUN go install golang.org/x/tools/cmd/goimports@latest \
     && go install github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest \
     && go install github.com/ramya-rao-a/go-outline@latest \
@@ -10,5 +10,7 @@ RUN go install golang.org/x/tools/cmd/goimports@latest \
     && go install github.com/haya14busa/goplay/cmd/goplay@latest \
     && go install honnef.co/go/tools/cmd/staticcheck@latest \
     && go install golang.org/x/tools/gopls@latest
+RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-amd64.tar.gz | tar xvz
+RUN mv ./migrate /usr/bin/migrate
 
 WORKDIR /go/nrsDDD
