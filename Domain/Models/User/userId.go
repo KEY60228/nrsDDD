@@ -6,12 +6,12 @@ type userId struct {
 	value string
 }
 
-func newUserId(value string) (*userId, error) {
-	if len(value) == 0 {
-		return nil, errors.New("user id is invalid")
+func newUserId(id string) (*userId, error) {
+	if len(id) == 0 {
+		return nil, errors.New("UserId is invalid")
 	}
 	ui := &userId{
-		value: value,
+		value: id,
 	}
 	return ui, nil
 }

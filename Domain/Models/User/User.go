@@ -14,6 +14,7 @@ func New(id string, name string) (*User, error) {
 	if len(name) == 0 {
 		return nil, errors.New("UserName is invalid")
 	}
+
 	ui, err := newUserId(id)
 	if err != nil {
 		return nil, err
@@ -22,10 +23,12 @@ func New(id string, name string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	u := &User{
 		Id:   *ui,
 		Name: *un,
 	}
+
 	return u, nil
 }
 

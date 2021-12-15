@@ -4,23 +4,18 @@ import (
 	"fmt"
 	"log"
 
-	"nrsDDD/Domain/Models/user"
+	application "nrsDDD/Application"
 )
 
 func main() {
-	user1, err := user.New("1", "KEY")
+	p := &application.Program{}
+	user1, err := p.CreateUser("Kenta")
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(*user1)
 
-	err = user1.ChangeName("Kenta")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(*user1)
-
-	user2, err := user.New("2", "Pori")
+	user2, err := p.CreateUser("Kenta")
 	if err != nil {
 		log.Fatal(err)
 	}
