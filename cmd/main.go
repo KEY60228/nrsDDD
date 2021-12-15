@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	user1, err := user.New("1", "KEY")
+	user1, err := user.New("KEY")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -21,7 +21,7 @@ func main() {
 	}
 	fmt.Println(*user1)
 
-	user2, err := user.New("2", "Pori")
+	user2, err := user.New("Pori")
 	if err != nil {
 		log.Fatal(err)
 	}
