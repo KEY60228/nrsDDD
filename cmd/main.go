@@ -4,24 +4,18 @@ import (
 	"fmt"
 	"log"
 
-	"nrsDDD/Domain/Models/user"
-	userService "nrsDDD/Domain/Services/user"
+	application "nrsDDD/Application"
 )
 
 func main() {
-	user1, err := user.New("KEY")
+	p := &application.Program{}
+	user1, err := p.CreateUser("Kenta")
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(*user1)
 
-	err = user1.ChangeName("Kenta")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(*user1)
-
-	user2, err := user.New("Pori")
+	user2, err := p.CreateUser("Kenta")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,11 +25,5 @@ func main() {
 		fmt.Println("Equal")
 	} else {
 		fmt.Println("Not Equal")
-	}
-
-	if userService.Exists(*user2) {
-		fmt.Println("Exists")
-	} else {
-		fmt.Println(("Not Exists"))
 	}
 }

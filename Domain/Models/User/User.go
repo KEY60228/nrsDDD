@@ -7,12 +7,15 @@ type User struct {
 	Name userName
 }
 
-func New(name string) (*User, error) {
+func New(id string, name string) (*User, error) {
+	if len(id) == 0 {
+		return nil, errors.New("UserId is invalid")
+	}
 	if len(name) == 0 {
 		return nil, errors.New("UserName is invalid")
 	}
 
-	ui, err := newUserId()
+	ui, err := newUserId(id)
 	if err != nil {
 		return nil, err
 	}
