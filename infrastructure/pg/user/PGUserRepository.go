@@ -67,3 +67,20 @@ func (ur *UserRepository) Find(userName string) (bool, error) {
 	}
 	return true, nil
 }
+
+func (ur *UserRepository) Delete(user u.User) error {
+	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+	if err != nil {
+		return err
+	}
+
+	result := db.Delete(&User{
+		Id: user.Id.Value,
+	})
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}

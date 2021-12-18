@@ -46,3 +46,11 @@ func (p *Program) CreateUser(userName string) (*u.User, error) {
 
 	return user, nil
 }
+
+func (p *Program) DeleteUser(user u.User) error {
+	err := p.userRepository.Delete(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}

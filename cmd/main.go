@@ -38,4 +38,16 @@ func main() {
 	} else {
 		fmt.Println("Not Equal")
 	}
+
+	err = program.DeleteUser(*user1)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Deleted user1")
+
+	err = program.DeleteUser(*user2)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Deleted user2")
 }
