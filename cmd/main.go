@@ -5,11 +5,13 @@ import (
 	"log"
 
 	app "nrsDDD/application"
-	ur "nrsDDD/infrastructure/pg/user"
+	// ur "nrsDDD/infrastructure/pg/user"
+	testur "nrsDDD/infrastructure/testpg/user"
 )
 
 func main() {
-	userRepository, err := ur.New()
+	// userRepository, err := ur.New()
+	userRepository, err := testur.New() // テスト用
 	if err != nil {
 		log.Fatal(err)
 	}
