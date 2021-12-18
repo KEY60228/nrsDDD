@@ -3,7 +3,7 @@ package user
 import "errors"
 
 type userName struct {
-	value string
+	Value string
 }
 
 func newUserName(value string) (*userName, error) {
@@ -11,7 +11,7 @@ func newUserName(value string) (*userName, error) {
 		return nil, errors.New("value is invalid")
 	}
 	un := &userName{
-		value: value,
+		Value: value,
 	}
 	return un, nil
 }

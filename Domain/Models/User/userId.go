@@ -1,17 +1,14 @@
 package user
 
-import "errors"
+import "github.com/google/uuid"
 
 type userId struct {
-	value string
+	Value string
 }
 
-func newUserId(id string) (*userId, error) {
-	if len(id) == 0 {
-		return nil, errors.New("UserId is invalid")
-	}
+func newUserId() (*userId, error) {
 	ui := &userId{
-		value: id,
+		Value: uuid.New().String(),
 	}
 	return ui, nil
 }

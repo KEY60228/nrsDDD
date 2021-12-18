@@ -15,7 +15,7 @@ func main() {
 	}
 	fmt.Println(*user1)
 
-	user2, err := p.CreateUser("Kenta")
+	user2, err := p.CreateUser("Pori")
 	if err != nil {
 		log.Fatal(err)
 	}

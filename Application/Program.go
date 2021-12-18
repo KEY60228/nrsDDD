@@ -19,6 +19,11 @@ func (p *Program) CreateUser(userName string) (*user.User, error) {
 		return nil, fmt.Errorf("%vは既に存在しています", userName)
 	}
 
+	u, err := user.New(userName)
+	if err != nil {
+		return nil, err
+	}
+
 	connStr := fmt.Sprintf("host=pgsql dbname=nrsDDD user=%s password=%s sslmode=disable", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"))
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -31,13 +36,7 @@ func (p *Program) CreateUser(userName string) (*user.User, error) {
 	// 	return nil, err
 	// }
 
-	var id string
-	err = db.QueryRow(`INSERT INTO users (username) VALUES ($1) RETURNING id`, userName).Scan(&id)
-	if err != nil {
-		return nil, err
-	}
-
-	u, err := user.New(id, userName)
+	_, err = db.Exec(`INSERT INTO users (id, name) VALUES ($1, $2)`, u.Id.Value, u.Name.Value)
 	if err != nil {
 		return nil, err
 	}
