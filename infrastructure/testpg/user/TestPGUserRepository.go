@@ -1,66 +1,69 @@
 package user
 
 import (
-	"database/sql"
+	"errors"
 	"fmt"
 	"os"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	u "nrsDDD/domain/models/user"
 )
 
+type User struct {
+	gorm.Model
+	Id   string `gorm:"primaryKey"`
+	Name string
+}
+
 type UserRepository struct {
-	connectionString string
+	dsn string
 }
 
 func New() (*UserRepository, error) {
-	connStr := fmt.Sprintf("host=testpg dbname=nrsDDD user=%s password=%s sslmode=disable", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"))
+	dsn := fmt.Sprintf("host=testpg dbname=nrsDDD user=%s password=%s sslmode=disable", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"))
 	ur := &UserRepository{
-		connectionString: connStr,
+		dsn: dsn,
 	}
 	return ur, nil
 }
 
 func (ur *UserRepository) Save(user u.User) error {
-	db, err := sql.Open("postgres", ur.connectionString)
+	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 	if err != nil {
 		return err
 	}
-	defer db.Close()
 
-	// err = db.Ping()
-	// if err != nil {
-	// 	return err
-	// }
-
-	_, err = db.Exec(`INSERT INTO users (id, name) VALUES ($1, $2)`, user.Id.Value, user.Name.Value)
-	if err != nil {
-		return err
+	result := db.Create(&User{
+		Id:   user.Id.Value,
+		Name: user.Name.Value,
+	})
+	if result.Error != nil {
+		return result.Error
 	}
 
 	return nil
 }
 
 func (ur *UserRepository) Find(userName string) (bool, error) {
-	db, err := sql.Open("postgres", ur.connectionString)
-	if err != nil {
-		return false, err
-	}
-	defer db.Close()
-
-	// err = db.Ping()
-	// if err != nil {
-	// 	return false, err
-	// }
-
-	var cnt int32
-	err = db.QueryRow(`SELECT COUNT(*) FROM users WHERE username = $1`, userName).Scan(&cnt)
+	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 	if err != nil {
 		return false, err
 	}
 
-	if cnt > 0 {
-		return true, nil
-	} else {
-		return false, nil
+	result := db.Where("name = ?", userName).First(&User{})
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return false, nil
+		} else {
+			return false, result.Error
+		}
 	}
+	return true, nil
 }

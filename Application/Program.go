@@ -27,6 +27,9 @@ func (p *Program) CreateUser(userName string) (*u.User, error) {
 	}
 
 	exists, err := userService.Exists(userName)
+	if err != nil {
+		return nil, err
+	}
 	if exists {
 		return nil, fmt.Errorf("%vは既に存在しています", userName)
 	}

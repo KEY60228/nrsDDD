@@ -5,20 +5,20 @@ import (
 	"log"
 
 	app "nrsDDD/application"
-	// ur "nrsDDD/infrastructure/pg/user"
-	testur "nrsDDD/infrastructure/testpg/user"
+	ur "nrsDDD/infrastructure/pg/user"
+	// testur "nrsDDD/infrastructure/testpg/user"
 )
 
 func main() {
-	// userRepository, err := ur.New()
-	userRepository, err := testur.New() // テスト用
+	userRepository, err := ur.New()
+	// userRepository, err := testur.New() // テスト用
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	program, err := app.New(userRepository)
 	if err != nil {
-		log.Fatal((err))
+		log.Fatal(err)
 	}
 
 	user1, err := program.CreateUser("Kenta")
