@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	program := &app.Program{}
+	program := app.New() // 仮
 	user1, err := program.CreateUser("Kenta")
 	if err != nil {
 		log.Fatal(err)
