@@ -14,7 +14,12 @@ import (
 type Program struct{}
 
 func (p *Program) CreateUser(userName string) (*u.User, error) {
-	exists, err := us.Exists(userName)
+	userService, err := us.New()
+	if err != nil {
+		return nil, err
+	}
+
+	exists, err := userService.Exists(userName)
 	if exists {
 		return nil, fmt.Errorf("%vは既に存在しています", userName)
 	}

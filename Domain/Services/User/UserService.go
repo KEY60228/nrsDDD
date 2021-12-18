@@ -8,7 +8,13 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func Exists(userName string) (bool, error) {
+type UserService struct {}
+
+func New() (*UserService, error) {
+	return &UserService{}, nil
+}
+
+func (us *UserService) Exists(userName string) (bool, error) {
 	// 重複を確認する
 	connStr := fmt.Sprintf("host=pgsql dbname=nrsDDD user=%s password=%s sslmode=disable", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"))
 	db, err := sql.Open("postgres", connStr)
