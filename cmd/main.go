@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"log"
 
-	application "nrsDDD/Application"
+	app "nrsDDD/application"
 )
 
 func main() {
-	p := &application.Program{}
-	user1, err := p.CreateUser("Kenta")
+	program := &app.Program{}
+	user1, err := program.CreateUser("Kenta")
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(*user1)
 
-	user2, err := p.CreateUser("Pori")
+	user2, err := program.CreateUser("Pori")
 	if err != nil {
 		log.Fatal(err)
 	}

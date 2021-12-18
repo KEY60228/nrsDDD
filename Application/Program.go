@@ -7,19 +7,19 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"nrsDDD/Domain/Models/user"
-	userService "nrsDDD/Domain/Services/user"
+	u "nrsDDD/domain/models/user"
+	us "nrsDDD/domain/services/user"
 )
 
 type Program struct{}
 
-func (p *Program) CreateUser(userName string) (*user.User, error) {
-	exists, err := userService.Exists(userName)
+func (p *Program) CreateUser(userName string) (*u.User, error) {
+	exists, err := us.Exists(userName)
 	if exists {
 		return nil, fmt.Errorf("%vは既に存在しています", userName)
 	}
 
-	u, err := user.New(userName)
+	user, err := u.New(userName)
 	if err != nil {
 		return nil, err
 	}
@@ -36,10 +36,10 @@ func (p *Program) CreateUser(userName string) (*user.User, error) {
 	// 	return nil, err
 	// }
 
-	_, err = db.Exec(`INSERT INTO users (id, name) VALUES ($1, $2)`, u.Id.Value, u.Name.Value)
+	_, err = db.Exec(`INSERT INTO users (id, name) VALUES ($1, $2)`, user.Id.Value, user.Name.Value)
 	if err != nil {
 		return nil, err
 	}
 
-	return u, nil
+	return user, nil
 }
