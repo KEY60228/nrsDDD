@@ -24,7 +24,7 @@ func (us *UserService) Exists(userName string) (bool, error) {
 		return false, err
 	}
 	if user != nil {
-		return false, nil
+		return true, nil
 	}
-	return true, nil
+	return false, nil
 }

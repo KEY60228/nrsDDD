@@ -57,7 +57,7 @@ func (ur *UserRepository) FindByName(userName string) (*u.User, error) {
 		return nil, err
 	}
 
-	var user u.User
+	var user User
 	result := db.Where("name = ?", userName).First(&user)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -66,7 +66,9 @@ func (ur *UserRepository) FindByName(userName string) (*u.User, error) {
 			return nil, result.Error
 		}
 	}
-	return &user, nil
+	ui, _ := u.NewUserId(user.Id)
+	un, _ := u.NewUserName(user.Name)
+	return &u.User{Id: *ui, Name: *un}, nil
 }
 
 func (ur *UserRepository) Delete(user u.User) error {
