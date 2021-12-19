@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
-	app "nrsDDD/application"
+	uas "nrsDDD/application/user"
+	us "nrsDDD/domain/services/user"
 	ur "nrsDDD/infrastructure/pg/user"
-	// testur "nrsDDD/infrastructure/testpg/user"
+	// testur "nrsDDD/infrastructure/testpg/user" // テスト用
 )
 
 func main() {
@@ -16,38 +16,23 @@ func main() {
 		log.Fatal(err)
 	}
 
-	program, err := app.New(userRepository)
+	userService, err := us.New(userRepository)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	user1, err := program.CreateUser("Kenta")
+	userApplicationService, err := uas.New(userRepository, *userService)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(*user1)
 
-	user2, err := program.CreateUser("Pori")
+	err = userApplicationService.Register("Kenta")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(*user2)
 
-	if user1.Equals(*user2) {
-		fmt.Println("Equal")
-	} else {
-		fmt.Println("Not Equal")
-	}
-
-	err = program.DeleteUser(*user1)
+	err = userApplicationService.Register("Pori")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Deleted user1")
-
-	err = program.DeleteUser(*user2)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Deleted user2")
 }
