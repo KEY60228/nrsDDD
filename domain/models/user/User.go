@@ -1,6 +1,10 @@
 package user
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/google/uuid"
+)
 
 type User struct {
 	Id   UserId
@@ -12,7 +16,7 @@ func New(name string) (*User, error) {
 		return nil, errors.New("UserName is invalid")
 	}
 
-	ui, err := NewUserId()
+	ui, err := NewUserId(uuid.New().String())
 	if err != nil {
 		return nil, err
 	}
