@@ -45,3 +45,18 @@ func (uas *UserApplicationService) Register(userName string) error {
 
 	return nil
 }
+
+func (uas *UserApplicationService) Get(userId string) (*UserData, error) {
+	user, err := uas.userRepository.FindById(userId)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, nil
+	}
+	userData, err := newUserData(*user)
+	if err != nil {
+		return nil, err
+	}
+	return userData, nil
+}

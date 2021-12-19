@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	uas "nrsDDD/application/user"
@@ -26,13 +27,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = userApplicationService.Register("Kenta")
-	if err != nil {
-		log.Fatal(err)
-	}
+	// err = userApplicationService.Register("Kenta")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	err = userApplicationService.Register("Pori")
+	// err = userApplicationService.Register("Pori")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	user, err := userApplicationService.Get("3df7db6d-bc20-4591-839a-b6c2581011b8")
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(*user)
 }
