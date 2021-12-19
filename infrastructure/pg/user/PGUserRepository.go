@@ -49,23 +49,24 @@ func (ur *UserRepository) Save(user u.User) error {
 	return nil
 }
 
-func (ur *UserRepository) Find(userName string) (bool, error) {
+func (ur *UserRepository) FindByName(userName string) (*u.User, error) {
 	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	result := db.Where("name = ?", userName).First(&User{})
+	var user u.User
+	result := db.Where("name = ?", userName).First(&user)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return false, nil
+			return nil, nil
 		} else {
-			return false, result.Error
+			return nil, result.Error
 		}
 	}
-	return true, nil
+	return &user, nil
 }
 
 func (ur *UserRepository) Delete(user u.User) error {
