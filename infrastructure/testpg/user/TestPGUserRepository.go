@@ -101,7 +101,7 @@ func (ur *UserRepository) Update(user u.User) error {
 		return err
 	}
 
-	result := db.Model(&User{}).Where("id = ?", user.Id).Update("name", user.Name)
+	result := db.Model(&User{}).Where("id = ?", user.Id.Value).Update("name", user.Name.Value)
 	if result.Error != nil {
 		return result.Error
 	}

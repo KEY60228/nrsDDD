@@ -46,9 +46,20 @@ func main() {
 	}
 	fmt.Println(*user)
 
-	err = userApplicationService.Update(user.Id, "Ken")
+	command, err := uas.NewUserUpdateCommand(user.Id)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	err = command.SetName("Kenta")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	user, err = userApplicationService.Update(*command)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	fmt.Println(*user)
 }

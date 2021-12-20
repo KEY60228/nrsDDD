@@ -62,32 +62,39 @@ func (uas *UserApplicationService) Get(userId string) (*UserData, error) {
 	return userData, nil
 }
 
-func (uas *UserApplicationService) Update(userId string, name string) error {
-	user, err := uas.userRepository.FindById(userId)
+func (uas *UserApplicationService) Update(command UserUpdateCommand) (*UserData, error) {
+	user, err := uas.userRepository.FindById(command.Id)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if user == nil {
-		return errors.New("該当のIDのユーザーはいません")
+		return nil, errors.New("該当のIDのユーザーはいません")
 	}
 
-	exists, err := uas.userService.Exists(name)
-	if err != nil {
-		return err
-	}
-	if exists {
-		return fmt.Errorf("%vは既に存在しています", name)
-	}
+	if command.Name != "" {
+		exists, err := uas.userService.Exists(command.Name)
+		if err != nil {
+			return nil, err
+		}
+		if exists {
+			return nil, fmt.Errorf("%vは既に存在しています", command.Name)
+		}
 
-	err = user.ChangeName(name)
-	if err != nil {
-		return err
+		err = user.ChangeName(command.Name)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	err = uas.userRepository.Update(*user)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	ud, err := newUserData(*user)
+	if err != nil {
+		return nil, err
+	}
+
+	return ud, nil
 }
