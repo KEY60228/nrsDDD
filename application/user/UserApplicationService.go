@@ -98,3 +98,16 @@ func (uas *UserApplicationService) Update(command UserUpdateCommand) (*UserData,
 
 	return ud, nil
 }
+
+func (uas *UserApplicationService) Delete(command UserDeleteCommand) error {
+	user, err := uas.userRepository.FindById(command.Id)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return errors.New("ユーザーが存在しません")
+	}
+
+	uas.userRepository.Delete(*user)
+	return nil
+}

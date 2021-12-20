@@ -46,20 +46,23 @@ func main() {
 	}
 	fmt.Println(*user)
 
-	command, err := uas.NewUserUpdateCommand(user.Id)
+	updateCommand, err := uas.NewUserUpdateCommand(user.Id)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = command.SetName("Kenta")
+	err = updateCommand.SetName("Ken")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	user, err = userApplicationService.Update(*command)
+	user, err = userApplicationService.Update(*updateCommand)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	deleteCommand, err := uas.NewUserDeleteCommand(user.Id)
+	err = userApplicationService.Delete(*deleteCommand)
 
 	fmt.Println(*user)
 }
