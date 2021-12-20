@@ -37,7 +37,16 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 
-	user, err := userApplicationService.Get("3df7db6d-bc20-4591-839a-b6c2581011b8")
+	user, err := userApplicationService.Get("823fc68e-36cd-4416-be1b-c96c53983277")
+	if err != nil {
+		log.Fatal(err)
+	}
+	if user == nil {
+		log.Fatal("ユーザーが存在しません")
+	}
+	fmt.Println(*user)
+
+	err = userApplicationService.Update(user.Id, "Ken")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,6 +1,7 @@
 package user
 
 import (
+	"errors"
 	"fmt"
 	u "nrsDDD/domain/models/user"
 	us "nrsDDD/domain/services/user"
@@ -59,4 +60,34 @@ func (uas *UserApplicationService) Get(userId string) (*UserData, error) {
 		return nil, err
 	}
 	return userData, nil
+}
+
+func (uas *UserApplicationService) Update(userId string, name string) error {
+	user, err := uas.userRepository.FindById(userId)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return errors.New("該当のIDのユーザーはいません")
+	}
+
+	exists, err := uas.userService.Exists(name)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return fmt.Errorf("%vは既に存在しています", name)
+	}
+
+	err = user.ChangeName(name)
+	if err != nil {
+		return err
+	}
+
+	err = uas.userRepository.Update(*user)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

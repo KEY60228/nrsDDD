@@ -93,6 +93,21 @@ func (ur *UserRepository) FindByName(userName string) (*u.User, error) {
 	return &u.User{Id: *ui, Name: *un}, nil
 }
 
+func (ur *UserRepository) Update(user u.User) error {
+	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+	if err != nil {
+		return err
+	}
+
+	result := db.Model(&User{}).Where("id = ?", user.Id).Update("name", user.Name)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
 func (ur *UserRepository) Delete(user u.User) error {
 	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
