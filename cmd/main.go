@@ -27,17 +27,22 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// err = userApplicationService.Register("Kenta")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	userRegisterService, err := uas.NewUserRegisterService(userRepository, *userService)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// err = userApplicationService.Register("Pori")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	userRegisterCommand, err := uas.NewUserRegisterCommand("Kenta")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	user, err := userApplicationService.Get("823fc68e-36cd-4416-be1b-c96c53983277")
+	err = userRegisterService.Handle(*userRegisterCommand)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	user, err := userApplicationService.Get("8752be00-0611-4846-b02a-87dc5b330d98")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -61,8 +66,17 @@ func main() {
 		log.Fatal(err)
 	}
 
+	userDeleteService, err := uas.NewUserDeleteService(userRepository)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	deleteCommand, err := uas.NewUserDeleteCommand(user.Id)
-	err = userApplicationService.Delete(*deleteCommand)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = userDeleteService.Handle(*deleteCommand)
 
 	fmt.Println(*user)
 }
