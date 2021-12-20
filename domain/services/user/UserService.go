@@ -19,9 +19,12 @@ func New(userRepository u.UserRepositoryInterface) (*UserService, error) {
 
 func (us *UserService) Exists(userName string) (bool, error) {
 	// 重複を確認する
-	exists, err := us.userRepository.Find(userName)
+	user, err := us.userRepository.FindByName(userName)
 	if err != nil {
 		return false, err
 	}
-	return exists, nil
+	if user != nil {
+		return true, nil
+	}
+	return false, nil
 }

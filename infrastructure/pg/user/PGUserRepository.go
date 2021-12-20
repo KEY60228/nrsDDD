@@ -49,23 +49,63 @@ func (ur *UserRepository) Save(user u.User) error {
 	return nil
 }
 
-func (ur *UserRepository) Find(userName string) (bool, error) {
+func (ur *UserRepository) FindById(userId string) (*u.User, error) {
 	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	result := db.Where("name = ?", userName).First(&User{})
+	var user User
+	result := db.First(&user, "id = ?", userId)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return false, nil
+			return nil, nil
 		} else {
-			return false, result.Error
+			return nil, result.Error
 		}
 	}
-	return true, nil
+	ui, _ := u.NewUserId(user.Id)
+	un, _ := u.NewUserName(user.Name)
+	return &u.User{Id: *ui, Name: *un}, nil
+}
+
+func (ur *UserRepository) FindByName(userName string) (*u.User, error) {
+	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var user User
+	result := db.Where("name = ?", userName).First(&user)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		} else {
+			return nil, result.Error
+		}
+	}
+	ui, _ := u.NewUserId(user.Id)
+	un, _ := u.NewUserName(user.Name)
+	return &u.User{Id: *ui, Name: *un}, nil
+}
+
+func (ur *UserRepository) Update(user u.User) error {
+	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+	if err != nil {
+		return err
+	}
+
+	result := db.Model(&User{}).Where("id = ?", user.Id.Value).Update("name", user.Name.Value)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
 
 func (ur *UserRepository) Delete(user u.User) error {

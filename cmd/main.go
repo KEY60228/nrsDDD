@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"log"
 
-	app "nrsDDD/application"
+	uas "nrsDDD/application/user"
+	us "nrsDDD/domain/services/user"
 	ur "nrsDDD/infrastructure/pg/user"
-	// testur "nrsDDD/infrastructure/testpg/user"
+	// testur "nrsDDD/infrastructure/testpg/user" // テスト用
 )
 
 func main() {
@@ -16,38 +17,66 @@ func main() {
 		log.Fatal(err)
 	}
 
-	program, err := app.New(userRepository)
+	userService, err := us.New(userRepository)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	user1, err := program.CreateUser("Kenta")
+	userApplicationService, err := uas.New(userRepository, *userService)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(*user1)
 
-	user2, err := program.CreateUser("Pori")
+	userRegisterService, err := uas.NewUserRegisterService(userRepository, *userService)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(*user2)
 
-	if user1.Equals(*user2) {
-		fmt.Println("Equal")
-	} else {
-		fmt.Println("Not Equal")
-	}
-
-	err = program.DeleteUser(*user1)
+	userRegisterCommand, err := uas.NewUserRegisterCommand("Kenta")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Deleted user1")
 
-	err = program.DeleteUser(*user2)
+	err = userRegisterService.Handle(*userRegisterCommand)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Deleted user2")
+
+	user, err := userApplicationService.Get("8752be00-0611-4846-b02a-87dc5b330d98")
+	if err != nil {
+		log.Fatal(err)
+	}
+	if user == nil {
+		log.Fatal("ユーザーが存在しません")
+	}
+	fmt.Println(*user)
+
+	updateCommand, err := uas.NewUserUpdateCommand(user.Id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = updateCommand.SetName("Ken")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	user, err = userApplicationService.Update(*updateCommand)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	userDeleteService, err := uas.NewUserDeleteService(userRepository)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	deleteCommand, err := uas.NewUserDeleteCommand(user.Id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = userDeleteService.Handle(*deleteCommand)
+
+	fmt.Println(*user)
 }

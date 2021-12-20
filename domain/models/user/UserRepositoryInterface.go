@@ -2,6 +2,8 @@ package user
 
 type UserRepositoryInterface interface {
 	Save(User) error
-	Find(string) (bool, error)
+	FindById(string) (*User, error)
+	FindByName(string) (*User, error)
+	Update(User) error
 	Delete(User) error
 }
