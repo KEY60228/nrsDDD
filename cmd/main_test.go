@@ -42,7 +42,7 @@ func TestMain(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	userRegisterService, err := uas.NewUserRegisterService(userRepository, *userService)
+	userRegisterService, err := uas.NewUserRegisterService(userRepository, *userService, &testur.UserFactory{CurrentId: "a"})
 	if err != nil {
 		t.Fatal(err)
 	}

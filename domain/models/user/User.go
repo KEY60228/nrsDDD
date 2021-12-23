@@ -2,8 +2,6 @@ package user
 
 import (
 	"errors"
-
-	"github.com/google/uuid"
 )
 
 type User struct {
@@ -11,12 +9,15 @@ type User struct {
 	Name UserName
 }
 
-func New(name string) (*User, error) {
+func New(id string, name string) (*User, error) {
+	if len(id) == 0 {
+		return nil, errors.New("UserId is invalid")
+	}
 	if len(name) == 0 {
 		return nil, errors.New("UserName is invalid")
 	}
 
-	ui, err := NewUserId(uuid.New().String())
+	ui, err := NewUserId(id)
 	if err != nil {
 		return nil, err
 	}
