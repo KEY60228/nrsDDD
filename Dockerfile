@@ -1,6 +1,6 @@
 FROM golang:1.17-alpine3.14
 
-RUN apk add --update --no-cache bash gcc make git curl postgresql-client gzip tar
+RUN apk add --update --no-cache alpine-sdk build-base bash gcc make git curl postgresql-client gzip tar
 RUN go install golang.org/x/tools/cmd/goimports@latest \
     && go install github.com/uudashr/gopkgs/v2/cmd/gopkgs@latest \
     && go install github.com/ramya-rao-a/go-outline@latest \

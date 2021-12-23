@@ -24,7 +24,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	userRegisterService, err := uas.NewUserRegisterService(userRepository, *userService)
+	userRegisterService, err := uas.NewUserRegisterService(userRepository, *userService, &ur.UserFactory{})
 	if err != nil {
 		log.Fatal(err)
 	}
