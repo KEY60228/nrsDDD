@@ -1,11 +1,17 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"os"
 	"testing"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	uas "nrsDDD/application/user"
 	us "nrsDDD/domain/services/user"
@@ -32,7 +38,15 @@ func TestMain(t *testing.T) {
 		}
 	})
 
-	userRepository, err := testur.New()
+	dsn := fmt.Sprintf("host=testpg dbname=nrsDDD user=%s password=%s sslmode=disable", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"))
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	userRepository, err := testur.New(db)
 	if err != nil {
 		t.Fatal(err)
 	}

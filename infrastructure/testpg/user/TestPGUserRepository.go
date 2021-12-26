@@ -2,12 +2,8 @@ package user
 
 import (
 	"errors"
-	"fmt"
-	"os"
 
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 
 	u "nrsDDD/domain/models/user"
 )
@@ -19,26 +15,18 @@ type User struct {
 }
 
 type UserRepository struct {
-	dsn string
+	db *gorm.DB
 }
 
-func New() (*UserRepository, error) {
-	dsn := fmt.Sprintf("host=testpg dbname=nrsDDD user=%s password=%s sslmode=disable", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"))
+func New(db *gorm.DB) (*UserRepository, error) {
 	ur := &UserRepository{
-		dsn: dsn,
+		db: db,
 	}
 	return ur, nil
 }
 
 func (ur *UserRepository) Save(user u.User) error {
-	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
-	})
-	if err != nil {
-		return err
-	}
-
-	result := db.Create(&User{
+	result := ur.db.Create(&User{
 		Id:   user.Id.Value,
 		Name: user.Name.Value,
 	})
@@ -50,15 +38,8 @@ func (ur *UserRepository) Save(user u.User) error {
 }
 
 func (ur *UserRepository) FindById(userId string) (*u.User, error) {
-	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
-	})
-	if err != nil {
-		return nil, err
-	}
-
 	var user User
-	result := db.First(&user, "id = ?", userId)
+	result := ur.db.First(&user, "id = ?", userId)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -72,15 +53,8 @@ func (ur *UserRepository) FindById(userId string) (*u.User, error) {
 }
 
 func (ur *UserRepository) FindByName(userName string) (*u.User, error) {
-	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
-	})
-	if err != nil {
-		return nil, err
-	}
-
 	var user User
-	result := db.Where("name = ?", userName).First(&user)
+	result := ur.db.Where("name = ?", userName).First(&user)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -94,14 +68,7 @@ func (ur *UserRepository) FindByName(userName string) (*u.User, error) {
 }
 
 func (ur *UserRepository) Update(user u.User) error {
-	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
-	})
-	if err != nil {
-		return err
-	}
-
-	result := db.Model(&User{}).Where("id = ?", user.Id.Value).Update("name", user.Name.Value)
+	result := ur.db.Model(&User{}).Where("id = ?", user.Id.Value).Update("name", user.Name.Value)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -109,14 +76,7 @@ func (ur *UserRepository) Update(user u.User) error {
 }
 
 func (ur *UserRepository) Delete(user u.User) error {
-	db, err := gorm.Open(postgres.Open(ur.dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
-	})
-	if err != nil {
-		return err
-	}
-
-	result := db.Delete(&User{
+	result := ur.db.Delete(&User{
 		Id: user.Id.Value,
 	})
 	if result.Error != nil {
