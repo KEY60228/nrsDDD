@@ -6,6 +6,10 @@ import (
 	"log"
 	"os"
 
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+
 	uas "nrsDDD/application/user"
 	us "nrsDDD/domain/services/user"
 	ur "nrsDDD/infrastructure/pg/user"
@@ -13,8 +17,17 @@ import (
 )
 
 func main() {
-	userRepository, err := ur.New()
-	// userRepository, err := testur.New() // テスト用
+	dsn := fmt.Sprintf("host=pgsql dbname=nrsDDD user=%s password=%s sslmode=disable", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"))
+	// dsn := fmt.Sprintf("host=testpg dbname=nrsDDD user=%s password=%s sslmode=disable", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD")) // テスト用
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	userRepository, err := ur.New(db)
+	// userRepository, err := testur.New(db) // テスト用
 	if err != nil {
 		log.Fatal(err)
 	}
