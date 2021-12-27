@@ -75,11 +75,7 @@ func (cas *CircleApplicationService) Join(command CircleJoinCommand) error {
 		return errors.New("サークルが見つかりません")
 	}
 
-	if len(circle.Members) >= 29 {
-		return errors.New("メンバーがいっぱいです")
-	}
-
-	circle.Members = append(circle.Members, *member)
+	circle.Join(*member)
 
 	err = cas.circleRepository.Save(*circle)
 	if err != nil {
@@ -125,7 +121,7 @@ func (cas CircleApplicationService) Invite(command CircleInviteCommand) error {
 		return errors.New("サークルが見つかりません")
 	}
 
-	if len(circle.Members) >= 29 {
+	if circle.IsFull() {
 		return errors.New("メンバーがいっぱいです")
 	}
 
