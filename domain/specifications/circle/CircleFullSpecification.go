@@ -9,7 +9,7 @@ type CircleFullSpecification struct {
 	userRepository u.UserRepositoryInterface
 }
 
-func New(userRepository u.UserRepositoryInterface) (*CircleFullSpecification, error) {
+func NewCircleFullSpecification(userRepository u.UserRepositoryInterface) (*CircleFullSpecification, error) {
 	return &CircleFullSpecification{
 		userRepository: userRepository,
 	}, nil

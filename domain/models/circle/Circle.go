@@ -1,6 +1,8 @@
 package circle
 
 import (
+	"time"
+
 	u "nrsDDD/domain/models/user"
 )
 
@@ -9,6 +11,7 @@ type Circle struct {
 	Name    CircleName
 	Owner   u.User
 	Members []u.UserId
+	Created time.Time
 }
 
 func New(id CircleId, name CircleName, owner u.User, members []u.UserId) (*Circle, error) {
