@@ -46,3 +46,7 @@ func (u *User) ChangeName(name string) error {
 func (u *User) Equals(other User) bool {
 	return u.Id == other.Id
 }
+
+func (u *User) IsPremium() bool {
+	return true // 仮
+}

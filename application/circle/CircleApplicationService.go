@@ -5,6 +5,7 @@ import (
 	c "nrsDDD/domain/models/circle"
 	u "nrsDDD/domain/models/user"
 	cs "nrsDDD/domain/services/circle"
+	cfs "nrsDDD/domain/specifications/circle"
 )
 
 type CircleApplicationService struct {
@@ -109,6 +110,14 @@ func (cas *CircleApplicationService) Join(command CircleJoinCommand) error {
 		return errors.New("サークルが見つかりません")
 	}
 
+	circleFullSpecification, err := cfs.New(cas.userRepository)
+	if err != nil {
+		return err
+	}
+	if circleFullSpecification.IsSatisfiedBy(*circle) {
+		return errors.New("メンバーがいっぱいです")
+	}
+
 	circle.Join(*memberId)
 
 	err = cas.circleRepository.Save(*circle)
@@ -155,7 +164,11 @@ func (cas CircleApplicationService) Invite(command CircleInviteCommand) error {
 		return errors.New("サークルが見つかりません")
 	}
 
-	if circle.IsFull() {
+	circleFullSpecification, err := cfs.New(cas.userRepository)
+	if err != nil {
+		return err
+	}
+	if circleFullSpecification.IsSatisfiedBy(*circle) {
 		return errors.New("メンバーがいっぱいです")
 	}
 

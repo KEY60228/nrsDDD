@@ -1,7 +1,6 @@
 package circle
 
 import (
-	"errors"
 	u "nrsDDD/domain/models/user"
 )
 
@@ -30,14 +29,7 @@ func (c *Circle) CountMembers() int {
 	return len(c.Members) + 1
 }
 
-func (c *Circle) IsFull() bool {
-	return c.CountMembers() >= 30
-}
-
 func (c *Circle) Join(member u.UserId) error {
-	if c.IsFull() {
-		return errors.New("メンバーがいっぱいです")
-	}
 	c.Members = append(c.Members, member)
 	return nil
 }
