@@ -1,7 +1,8 @@
 package circle
 
 import (
-	"errors"
+	"time"
+
 	u "nrsDDD/domain/models/user"
 )
 
@@ -10,6 +11,7 @@ type Circle struct {
 	Name    CircleName
 	Owner   u.User
 	Members []u.UserId
+	Created time.Time
 }
 
 func New(id CircleId, name CircleName, owner u.User, members []u.UserId) (*Circle, error) {
@@ -30,14 +32,7 @@ func (c *Circle) CountMembers() int {
 	return len(c.Members) + 1
 }
 
-func (c *Circle) IsFull() bool {
-	return c.CountMembers() >= 30
-}
-
 func (c *Circle) Join(member u.UserId) error {
-	if c.IsFull() {
-		return errors.New("メンバーがいっぱいです")
-	}
 	c.Members = append(c.Members, member)
 	return nil
 }

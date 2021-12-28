@@ -2,9 +2,12 @@ package circle
 
 import (
 	"errors"
+	"time"
+
 	c "nrsDDD/domain/models/circle"
 	u "nrsDDD/domain/models/user"
 	cs "nrsDDD/domain/services/circle"
+	csf "nrsDDD/domain/specifications/circle"
 )
 
 type CircleApplicationService struct {
@@ -109,6 +112,14 @@ func (cas *CircleApplicationService) Join(command CircleJoinCommand) error {
 		return errors.New("サークルが見つかりません")
 	}
 
+	circleFullSpecification, err := csf.NewCircleFullSpecification(cas.userRepository)
+	if err != nil {
+		return err
+	}
+	if circleFullSpecification.IsSatisfiedBy(*circle) {
+		return errors.New("メンバーがいっぱいです")
+	}
+
 	circle.Join(*memberId)
 
 	err = cas.circleRepository.Save(*circle)
@@ -155,7 +166,11 @@ func (cas CircleApplicationService) Invite(command CircleInviteCommand) error {
 		return errors.New("サークルが見つかりません")
 	}
 
-	if circle.IsFull() {
+	circleFullSpecification, err := csf.NewCircleFullSpecification(cas.userRepository)
+	if err != nil {
+		return err
+	}
+	if circleFullSpecification.IsSatisfiedBy(*circle) {
 		return errors.New("メンバーがいっぱいです")
 	}
 
@@ -169,4 +184,35 @@ func (cas CircleApplicationService) Invite(command CircleInviteCommand) error {
 	// 	return err
 	// }
 	return nil
+}
+
+func (cas *CircleApplicationService) GetRecommend(request CircleGetRecommendRequest) (*CircleGetRecommendedResult, error) {
+	circleRecommendSpec, err := csf.NewCircleRecommendSpecification(time.Now())
+	if err != nil {
+		return nil, err
+	}
+
+	circles, err := cas.circleRepository.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var cnt int
+	var recommendCircles []c.Circle
+	for _, circle := range circles {
+		if circleRecommendSpec.IsSatisfiedBy(*circle) {
+			recommendCircles[cnt] = *circle
+			cnt++
+		}
+		if cnt == 9 {
+			break
+		}
+	}
+
+	res, err := NewCircleGetRecommendedResult(recommendCircles)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
