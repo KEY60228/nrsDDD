@@ -26,8 +26,12 @@ func (c *Circle) ChangeName(name CircleName) error {
 	return nil
 }
 
+func (c *Circle) CountMembers() int {
+	return len(c.Members) + 1
+}
+
 func (c *Circle) IsFull() bool {
-	return len(c.Members) >= 29
+	return c.CountMembers() >= 30
 }
 
 func (c *Circle) Join(member u.UserId) error {
